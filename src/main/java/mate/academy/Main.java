@@ -2,14 +2,12 @@ package mate.academy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import mate.academy.lib.Injector;
 import mate.academy.model.CinemaHall;
 import mate.academy.model.Movie;
 import mate.academy.model.MovieSession;
 import mate.academy.model.Order;
 import mate.academy.model.ShoppingCart;
-import mate.academy.model.Ticket;
 import mate.academy.model.User;
 import mate.academy.service.CinemaHallService;
 import mate.academy.service.MovieService;
@@ -75,18 +73,13 @@ public class Main {
                 LocalDate.now()));
 
         User user = new User();
-        user.setEmail("test11111@example.com");
+        user.setEmail("test1111111@example.com");
         user.setPassword("1111");
         userService.add(user);
 
         shoppingCartService.registerNewShoppingCart(user);
         ShoppingCart shoppingCart = shoppingCartService.getByUser(user);
-
-        Ticket ticket = new Ticket();
-        ticket.setMovieSession(tomorrowSession);
-        ticket.setUser(user);
-        shoppingCart.setTickets(List.of(ticket));
-
+        shoppingCartService.addSession(tomorrowSession, user);
         Order order = orderService.completeOrder(shoppingCart);
         System.out.println("Completed order: " + order);
 
