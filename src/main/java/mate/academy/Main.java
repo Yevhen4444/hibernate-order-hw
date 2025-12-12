@@ -75,7 +75,7 @@ public class Main {
                 LocalDate.now()));
 
         User user = new User();
-        user.setEmail("test11@example.com");
+        user.setEmail("test11111@example.com");
         user.setPassword("1111");
         userService.add(user);
 

@@ -1,6 +1,5 @@
 package mate.academy.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import mate.academy.dao.OrderDao;
 import mate.academy.exception.DataProcessingException;
@@ -13,21 +12,23 @@ import org.hibernate.Transaction;
 
 @Dao
 public class OrderDaoImpl implements OrderDao {
-    private List<Order> orders = new ArrayList<>();
 
     @Override
     public List<Order> getByUser(User user) {
-        List<Order> userOrders = new ArrayList<>();
-        for (Order order : orders) {
-            if (order.getUser().equals(user)) {
-                userOrders.add(order);
-            }
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT o FROM Order o "
+                    + "JOIN FETCH o.tickets "
+                    + "WHERE o.user = :user";
+            return session.createQuery(hql, Order.class)
+                    .setParameter("user", user)
+                    .getResultList();
+        } catch (Exception e) {
+            throw new DataProcessingException("Can't get orders for user " + user, e);
         }
-        return userOrders;
     }
 
     @Override
-    public Order save(Order order) {
+    public Order add(Order order) {
         Session session = null;
         Transaction transaction = null;
         try {
